@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AMC - Requiring an Alternate</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #070a10;
+      --panel: #101724;
+      --panel-2: #121d2b;
+      --text: #f7f3e8;
+      --muted: #aeb9c8;
+      --line: rgba(255,255,255,.13);
+      --gold: #f5b83f;
+      --amber: #ffd166;
+      --red: #ff5b68;
+      --cyan: #51d6ff;
+      --green: #5ee2a0;
+      --violet: #b894ff;
+      --shadow: 0 24px 80px rgba(0,0,0,.45);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(245,184,63,.22), transparent 30%),
+        radial-gradient(circle at 84% 12%, rgba(81,214,255,.16), transparent 26%),
+        linear-gradient(140deg, #070a10 0%, #0c1320 52%, #090c12 100%);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding-bottom: 86px;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 38px 38px;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0 16px;
+      background: linear-gradient(180deg, rgba(7,10,16,.96), rgba(7,10,16,.78) 72%, transparent);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(245,184,63,.55);
+      box-shadow: 0 0 0 4px rgba(245,184,63,.08);
+      flex: 0 0 auto;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.15rem, 2.8vw, 2rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: .84rem;
+    }
+
+    .chip {
+      border: 1px solid rgba(245,184,63,.46);
+      background: rgba(245,184,63,.12);
+      color: #ffe4a1;
+      border-radius: 999px;
+      padding: 9px 12px;
+      white-space: nowrap;
+      font-size: .83rem;
+      font-weight: 750;
+      cursor: help;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .slide-column {
+      min-width: 0;
+    }
+
+    .stage {
+      min-height: calc(100vh - 118px);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(16,23,36,.94), rgba(11,17,27,.94));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .slide {
+      display: none;
+      padding: clamp(18px, 3vw, 32px);
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .slide-kicker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--cyan);
+      font-size: .82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    h2 {
+      margin: 12px 0 10px;
+      font-size: clamp(1.5rem, 5vw, 3.6rem);
+      line-height: .98;
+      letter-spacing: 0;
+      max-width: 820px;
+    }
+
+    .question {
+      color: var(--text);
+      border-left: 3px solid var(--gold);
+      padding-left: 12px;
+      margin: 12px 0 20px;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.45;
+    }
+
+    .taf-card {
+      border: 1px solid rgba(255,255,255,.15);
+      border-radius: 8px;
+      background: #070b12;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .taf-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.035);
+      color: var(--muted);
+      font-size: .8rem;
+    }
+
+    .taf {
+      padding: 14px;
+      font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: clamp(.9rem, 1.95vw, 1.02rem);
+      line-height: 1.6;
+    }
+
+    .taf-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+      padding: 2px 0;
+    }
+
+    .taf-line + .taf-line {
+      margin-top: 6px;
+    }
+
+    .tok {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 6px;
+      background: rgba(255,255,255,.045);
+      color: inherit;
+      padding: 3px 5px;
+      cursor: pointer;
+      transition: transform .16s ease, border-color .16s ease, background .16s ease;
+    }
+
+    .tok:hover,
+    .tok:focus-visible {
+      outline: none;
+      transform: translateY(-1px);
+      border-color: var(--cyan);
+      background: rgba(81,214,255,.14);
+    }
+
+    .tok.warn {
+      color: #17120b;
+      background: rgba(255,209,102,.92);
+      border-color: #ffe199;
+      box-shadow: 0 0 0 2px rgba(255,209,102,.18);
+      font-weight: 800;
+    }
+
+    .tok.action {
+      color: #fff8f8;
+      background: rgba(255,91,104,.78);
+      border-color: #ff9aa3;
+      box-shadow: 0 0 0 2px rgba(255,91,104,.18);
+      font-weight: 800;
+    }
+
+    .tok.info {
+      color: #061016;
+      background: rgba(81,214,255,.88);
+      border-color: #a8ecff;
+      font-weight: 800;
+    }
+
+    .answer {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .answer[hidden] {
+      display: none;
+    }
+
+    .answer-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+
+    .callout {
+      border-radius: 8px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.045);
+      min-height: 100%;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: .95rem;
+    }
+
+    .callout p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: .92rem;
+    }
+
+    .callout.red {
+      border-color: rgba(255,91,104,.42);
+      background: rgba(255,91,104,.1);
+    }
+
+    .callout.gold {
+      border-color: rgba(255,209,102,.42);
+      background: rgba(255,209,102,.09);
+    }
+
+    .callout.wide {
+      grid-column: 1 / -1;
+    }
+
+    .nav {
+      position: fixed;
+      left: var(--nav-left, 50%);
+      bottom: 14px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      width: var(--nav-width, min(920px, calc(100vw - 24px)));
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 8px;
+      background: rgba(7,10,16,.88);
+      box-shadow: 0 18px 70px rgba(0,0,0,.55);
+      backdrop-filter: blur(14px);
+      transform: translateX(-50%);
+    }
+
+    .nav button,
+    .reveal {
+      min-height: 44px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.16);
+      color: var(--text);
+      background: rgba(255,255,255,.06);
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    .reveal {
+      min-width: 158px;
+    }
+
+    .nav button.primary,
+    .reveal {
+      border-color: rgba(81,214,255,.55);
+      background: linear-gradient(135deg, rgba(81,214,255,.22), rgba(184,148,255,.16));
+    }
+
+    .nav button:disabled {
+      opacity: .42;
+      cursor: not-allowed;
+    }
+
+    .dots {
+      display: flex;
+      gap: 7px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+    }
+
+    .dot.active {
+      background: var(--gold);
+      box-shadow: 0 0 0 4px rgba(245,184,63,.12);
+    }
+
+    .side {
+      display: grid;
+      gap: 16px;
+      position: sticky;
+      top: 94px;
+    }
+
+    .inspector,
+    .refs {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(16,23,36,.88);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .inspector-title,
+    .refs-title {
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: .76rem;
+      font-weight: 850;
+      margin-bottom: 8px;
+    }
+
+    .inspector h3 {
+      margin: 0 0 8px;
+      font-size: 1.18rem;
+      letter-spacing: 0;
+    }
+
+    .inspector p,
+    .refs p,
+    .refs li {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: .91rem;
+    }
+
+    .inspector p {
+      margin: 0;
+    }
+
+    .refs ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .legend {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .legend span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .86rem;
+    }
+
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      flex: 0 0 auto;
+    }
+
+    .yellow {
+      background: var(--amber);
+    }
+
+    .red {
+      background: var(--red);
+    }
+
+    .blue {
+      background: var(--cyan);
+    }
+
+    .sheet {
+      position: fixed;
+      inset: auto 0 0;
+      display: none;
+      z-index: 30;
+      padding: 16px;
+      background: rgba(7,10,16,.92);
+      border-top: 1px solid rgba(255,255,255,.16);
+      box-shadow: 0 -18px 60px rgba(0,0,0,.48);
+    }
+
+    .sheet.open {
+      display: block;
+    }
+
+    .sheet h3 {
+      margin: 0 36px 8px 0;
+    }
+
+    .sheet p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .close-sheet {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 50%;
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+      cursor: pointer;
+    }
+
+    @media (max-width: 880px) {
+      .app {
+        padding: 12px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: static;
+      }
+
+      .inspector {
+        display: none;
+      }
+
+      .answer {
+        grid-template-columns: 1fr;
+      }
+
+      .chip {
+        font-size: .76rem;
+        padding: 8px 10px;
+      }
+
+      .logo {
+        width: 44px;
+        height: 44px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .topbar {
+        flex-direction: column;
+      }
+
+      .chip {
+        align-self: flex-start;
+      }
+
+      .taf-toolbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav button {
+        flex: 1;
+        padding-inline: 10px;
+      }
+
+      .dots {
+        min-width: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <img class="logo" src="assets/SIMBA.jpg" alt="SIMBA lion logo">
+        <div>
+          <h1>AMC - Requiring an Alternate</h1>
+          <div class="subtitle">Interactive TAF practice for destination alternate decisions</div>
+        </div>
+      </div>
+      <div class="chip" tabindex="0" data-title="Reference Version" data-body="Source chip requested for this guide: 202V3amc 29JUL24. Use current unit procedures and source publications when applying this in mission planning.">202V3amc 29JUL24</div>
+    </header>
+
+    <section class="layout">
+      <div class="slide-column">
+        <section class="stage" aria-live="polite">
+          <article class="slide active" data-slide="0">
+            <div class="slide-kicker">Example 1</div>
+            <p class="question">Landing at <strong>28 1900Z</strong>. Which line applies, and do we need an alternate?</p>
+
+            <div class="taf-card">
+              <div class="taf-toolbar">
+                <strong>KMCF TAF</strong>
+                <span>Tap or hover any boxed part for the decode.</span>
+              </div>
+              <div class="taf" role="group" aria-label="KMCF TAF">
+                <span class="taf-line">
+                  <button class="tok info" data-title="TAF" data-body="Terminal Aerodrome Forecast. This is the forecast package for a specific airfield.">TAF</button>
+                  <button class="tok info" data-title="KMCF" data-body="The forecast airfield is MacDill AFB, identified by ICAO code KMCF.">KMCF</button>
+                  <button class="tok" data-title="281700Z" data-body="Forecast issued on the 28th day of the month at 1700Z.">281700Z</button>
+                  <button class="tok" data-title="2817/2923" data-body="Valid from the 28th at 1700Z through the 29th at 2300Z.">2817/2923</button>
+                  <button class="tok" data-title="22006KT" data-body="Wind from 220 degrees at 6 knots.">22006KT</button>
+                  <button class="tok" data-title="9999" data-body="Visibility 10 kilometers or greater. In military TAFs, this commonly represents unrestricted or 6 statute miles or more for practical planning.">9999</button>
+                  <button class="tok" data-title="BKN020" data-body="Broken cloud layer at 2,000 feet AGL. Broken or overcast layers are ceilings.">BKN020</button>
+                  <button class="tok" data-title="QNH3002INS" data-body="Altimeter setting 30.02 inches of mercury.">QNH3002INS</button>
+                </span>
+                <span class="taf-line">
+                  <button class="tok warn" data-title="TEMPO 2818/2819" data-body="Temporary conditions expected between 1800Z and 1900Z on the 28th. Include TEMPO conditions from 1 hour before to 1 hour after ETA. (202V3, 4.16.2)">TEMPO 2818/2819</button>
+                  <button class="tok" data-title="24009KT" data-body="Wind from 240 degrees at 9 knots during the TEMPO period.">24009KT</button>
+                  <button class="tok" data-title="VCSH" data-body="Showers in the vicinity, not necessarily over the airfield.">VCSH</button>
+                </span>
+                <span class="taf-line">
+                  <button class="tok warn" data-title="BECMG 2819/2820" data-body="Becoming means a gradual change. Per AFPAM 11-238, the new condition becomes effective by the end time, so by 2000Z this line is in effect. At 1900Z, treat the transition carefully and include the ±1 hour window.">BECMG 2819/2820</button>
+                  <button class="tok" data-title="23009KT" data-body="Wind from 230 degrees at 9 knots.">23009KT</button>
+                  <button class="tok action" data-title="4000" data-body="Visibility 4,000 meters, which is about 2.5 statute miles. This is between 2 and 3 SM, but still below the 3 statute mile alternate-planning threshold. (202V3, 4.16.2.1)">4000</button>
+                  <button class="tok" data-title="-SHRA" data-body="Light rain showers.">-SHRA</button>
+                  <button class="tok" data-title="VCTS" data-body="Thunderstorms in the vicinity. This matters for mission planning and local procedures even if not directly over the field.">VCTS</button>
+                  <button class="tok action" data-title="BKN005CB" data-body="Broken cumulonimbus at 500 feet AGL. Broken is a ceiling, and this ceiling is below 2,000 feet AGL within the ETA window. (202V3, 4.16.2.1)">BKN005CB</button>
+                  <button class="tok warn" data-title="620504" data-body="TAF icing group. Per AFPAM 11-238, icing groups begin with 6 and follow the cloud group. This decodes as light rime icing in cloud from 5,000 to 9,000 feet AGL.">620504</button>
+                  <button class="tok" data-title="QNH2999INS" data-body="Altimeter setting 29.99 inches of mercury.">QNH2999INS</button>
+                </span>
+              </div>
+            </div>
+
+            <div class="answer-row">
+              <button class="reveal" type="button">Show Answer</button>
+            </div>
+
+            <div class="answer" hidden>
+              <div class="callout gold">
+                <strong>Line selection</strong>
+                <p>The ETA is at the start of the BECMG window and the ±1 hour window captures the change. BECMG becomes effective by the end time, so this is the timing trap.</p>
+              </div>
+              <div class="callout red">
+                <strong>Decision</strong>
+                <p>Alternate required. The forecast includes a ceiling below 2,000 feet AGL and visibility below 3 statute miles within the required window. (202V3, 4.16.2.1)</p>
+              </div>
+              <div class="callout wide">
+                <strong>Two-alternate filing note</strong>
+                <p>File two alternates when forecast visibility is less than published for the available precision approach. Also file two alternates when forecast ceiling or visibility is less than published for all other approaches.</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide" data-slide="1">
+            <div class="slide-kicker">Example 2</div>
+            <p class="question">Landing at <strong>29 0200Z</strong>. Which line applies, and do we need an alternate?</p>
+
+            <div class="taf-card">
+              <div class="taf-toolbar">
+                <strong>KSKA TAF</strong>
+                <span>Tap or hover any boxed part for the decode.</span>
+              </div>
+              <div class="taf" role="group" aria-label="KSKA TAF">
+                <span class="taf-line">
+                  <button class="tok info" data-title="TAF" data-body="Terminal Aerodrome Forecast.">TAF</button>
+                  <button class="tok info" data-title="KSKA" data-body="The forecast airfield is Fairchild AFB, identified by ICAO code KSKA.">KSKA</button>
+                  <button class="tok" data-title="281900Z" data-body="Forecast issued on the 28th day of the month at 1900Z.">281900Z</button>
+                  <button class="tok" data-title="2819/3001" data-body="Valid from the 28th at 1900Z through the 30th at 0100Z.">2819/3001</button>
+                  <button class="tok" data-title="03012KT" data-body="Wind from 030 degrees at 12 knots.">03012KT</button>
+                  <button class="tok" data-title="9999" data-body="Visibility 10 kilometers or greater.">9999</button>
+                  <button class="tok" data-title="FEW200" data-body="Few clouds at 20,000 feet AGL. Few is not a ceiling.">FEW200</button>
+                  <button class="tok" data-title="QNH2961INS" data-body="Altimeter setting 29.61 inches of mercury.">QNH2961INS</button>
+                </span>
+                <span class="taf-line">
+                  <button class="tok warn" data-title="BECMG 2901/2902" data-body="Becoming between 0100Z and 0200Z on the 29th. AFPAM 11-238 describes BECMG as a gradual change, effective by the end time. At 0200Z, this changed forecast line applies.">BECMG 2901/2902</button>
+                  <button class="tok action" data-title="VRB25G35KT" data-body="Variable wind at 25 knots gusting to 35 knots. Alternate required if the forecast winds are outside aircraft limitations. (202V3, 4.16.2.3)">VRB25G35KT</button>
+                  <button class="tok" data-title="4800" data-body="Visibility 4,800 meters, about 3 statute miles.">4800</button>
+                  <button class="tok" data-title="TSRA" data-body="Thunderstorm with rain. This can affect suitability even when ceiling and visibility alone are not the whole story.">TSRA</button>
+                  <button class="tok" data-title="OVC065CB" data-body="Overcast cumulonimbus at 6,500 feet AGL. Overcast is a ceiling, but this ceiling is above 2,000 feet.">OVC065CB</button>
+                  <button class="tok warn" data-title="520004" data-body="TAF turbulence group. Per AFPAM 11-238, turbulence groups begin with 5 and follow the cloud or icing group. This decodes as occasional moderate turbulence in clear air from the surface to 4,000 feet AGL.">520004</button>
+                  <button class="tok" data-title="QNH2957INS" data-body="Altimeter setting 29.57 inches of mercury.">QNH2957INS</button>
+                </span>
+              </div>
+            </div>
+
+            <div class="answer-row">
+              <button class="reveal" type="button">Show Answer</button>
+            </div>
+
+            <div class="answer" hidden>
+              <div class="callout gold">
+                <strong>Line selection</strong>
+                <p>The BECMG line is effective by 0200Z, so this line applies at the ETA.</p>
+              </div>
+              <div class="callout red">
+                <strong>Decision</strong>
+                <p>Alternate required if the forecast winds are outside aircraft limitations. (202V3, 4.16.2.3)</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="slide" data-slide="2">
+            <div class="slide-kicker">Example 3</div>
+            <p class="question">This line applies to the landing. Do we need an alternate?</p>
+
+            <div class="taf-card">
+              <div class="taf-toolbar">
+                <strong>ETAR TAF</strong>
+                <span>Tap or hover any boxed part for the decode.</span>
+              </div>
+              <div class="taf" role="group" aria-label="ETAR TAF">
+                <span class="taf-line">
+                  <button class="tok info" data-title="TAF" data-body="Terminal Aerodrome Forecast.">TAF</button>
+                  <button class="tok action" data-title="ETAR" data-body="Ramstein AB is outside the CONUS. Alternate required when the departure or destination airport is outside the CONUS, unless an exception applies. (202V3, 4.16.6.1)">ETAR</button>
+                  <button class="tok" data-title="281800Z" data-body="Forecast issued on the 28th day of the month at 1800Z.">281800Z</button>
+                  <button class="tok" data-title="2818/2924" data-body="Valid from the 28th at 1800Z through the 29th at 2400Z.">2818/2924</button>
+                  <button class="tok" data-title="06003KT" data-body="Wind from 060 degrees at 3 knots.">06003KT</button>
+                  <button class="tok" data-title="9999" data-body="Visibility 10 kilometers or greater.">9999</button>
+                  <button class="tok" data-title="SKC" data-body="Sky clear. No ceiling restriction from this TAF line.">SKC</button>
+                  <button class="tok" data-title="QNH3020INS" data-body="Altimeter setting 30.20 inches of mercury.">QNH3020INS</button>
+                </span>
+              </div>
+            </div>
+
+            <div class="answer-row">
+              <button class="reveal" type="button">Show Answer</button>
+            </div>
+
+            <div class="answer" hidden>
+              <div class="callout gold">
+                <strong>Weather read</strong>
+                <p>The weather itself looks excellent: light winds, unrestricted visibility, and clear sky.</p>
+              </div>
+              <div class="callout red">
+                <strong>Decision</strong>
+                <p>Alternate required unless an AMC exception applies. The trigger is not bad weather; it is the OCONUS destination rule. (202V3, 4.16.6.1)</p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <nav class="nav" aria-label="Scenario navigation">
+          <button id="prev" type="button">Back</button>
+          <div class="dots" aria-hidden="true">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <button id="next" class="primary" type="button">Next</button>
+        </nav>
+      </div>
+
+      <aside class="side">
+        <section class="inspector" aria-live="polite">
+          <div class="inspector-title">Tap A Box</div>
+          <h3 id="inspect-title">TAF Decoder</h3>
+          <p id="inspect-body">Select any boxed TAF element to see what it means and why it matters for the alternate decision.</p>
+          <div class="legend">
+            <span><i class="swatch yellow"></i> Caution: timing or interpretation point</span>
+            <span><i class="swatch red"></i> Rule-driven alternate trigger</span>
+            <span><i class="swatch blue"></i> Basic TAF identification</span>
+          </div>
+        </section>
+
+        <section class="refs">
+          <div class="refs-title">Reference Stack</div>
+          <p>Use the cited source guidance for mission planning, then decode TAF format with the quick-reference products.</p>
+          <ul>
+            <li>FIH: METAR and TAF decoding in flight</li>
+            <li>AFPAM 11-238: METAR and TAF codes</li>
+            <li>202V3amc: alternate application guidance</li>
+            <li>FAA Aviation Weather Handbook: civilian-field TAFs</li>
+            <li>AFMAN 11-203: Weather for Aircrew</li>
+          </ul>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <button class="close-sheet" type="button" aria-label="Close explanation">×</button>
+    <h3 id="sheet-title"></h3>
+    <p id="sheet-body"></p>
+  </section>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const dots = [...document.querySelectorAll(".dot")];
+    const prev = document.querySelector("#prev");
+    const next = document.querySelector("#next");
+    const stage = document.querySelector(".stage");
+    const inspectTitle = document.querySelector("#inspect-title");
+    const inspectBody = document.querySelector("#inspect-body");
+    const sheet = document.querySelector("#sheet");
+    const sheetTitle = document.querySelector("#sheet-title");
+    const sheetBody = document.querySelector("#sheet-body");
+    const closeSheet = document.querySelector(".close-sheet");
+    let current = 0;
+
+    function showSlide(index, shouldScroll = true) {
+      resetAnswers();
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
+      dots.forEach((dot, i) => dot.classList.toggle("active", i === current));
+      prev.disabled = current === 0;
+      next.textContent = current === slides.length - 1 ? "Restart" : "Next";
+      inspectTitle.textContent = "TAF Decoder";
+      inspectBody.textContent = "Select any boxed TAF element to see what it means and why it matters for the alternate decision.";
+      sheet.classList.remove("open");
+      if (shouldScroll) window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function resetAnswers() {
+      document.querySelectorAll(".slide").forEach((slide) => {
+        slide.querySelector(".answer")?.setAttribute("hidden", "");
+        const button = slide.querySelector(".reveal");
+        if (button) button.textContent = "Show Answer";
+      });
+    }
+
+    function alignNav() {
+      const rect = stage.getBoundingClientRect();
+      document.documentElement.style.setProperty("--nav-width", `${Math.min(rect.width, window.innerWidth - 24)}px`);
+      document.documentElement.style.setProperty("--nav-left", `${rect.left + rect.width / 2}px`);
+    }
+
+    function setExplanation(el) {
+      const title = el.dataset.title;
+      const body = el.dataset.body;
+      inspectTitle.textContent = title;
+      inspectBody.textContent = body;
+      if (matchMedia("(max-width: 880px)").matches) {
+        sheetTitle.textContent = title;
+        sheetBody.textContent = body;
+        sheet.classList.add("open");
+      }
+    }
+
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("[data-title][data-body]");
+      if (target) setExplanation(target);
+    });
+
+    document.querySelectorAll(".reveal").forEach((button) => {
+      button.addEventListener("click", () => {
+        const slide = button.closest(".slide");
+        const answer = slide.querySelector(".answer");
+        const isHidden = answer.hasAttribute("hidden");
+        if (isHidden) {
+          answer.removeAttribute("hidden");
+          button.textContent = "Hide Answer";
+        } else {
+          answer.setAttribute("hidden", "");
+          button.textContent = "Show Answer";
+        }
+      });
+    });
+
+    document.addEventListener("mouseover", (event) => {
+      const target = event.target.closest("[data-title][data-body]");
+      if (target && !matchMedia("(max-width: 880px)").matches) setExplanation(target);
+    });
+
+    prev.addEventListener("click", () => showSlide(current - 1));
+    next.addEventListener("click", () => showSlide(current === slides.length - 1 ? 0 : current + 1));
+    closeSheet.addEventListener("click", () => sheet.classList.remove("open"));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowRight") showSlide(current === slides.length - 1 ? 0 : current + 1);
+      if (event.key === "ArrowLeft") showSlide(current - 1);
+      if (event.key === "Escape") sheet.classList.remove("open");
+    });
+
+    window.addEventListener("resize", alignNav);
+    window.addEventListener("load", alignNav);
+    showSlide(0, false);
+    alignNav();
+  </script>
+</body>
+</html>
