@@ -104,6 +104,21 @@
       font-size: .84rem;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .cao {
+      color: #ffe4a1;
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .03em;
+    }
+
     .chip {
       border: 1px solid rgba(245,184,63,.46);
       background: rgba(245,184,63,.12);
@@ -601,7 +616,10 @@
           <div class="subtitle">Interactive TAF practice for destination alternate decisions</div>
         </div>
       </div>
-      <button class="chip" id="refs-open" type="button">References</button>
+      <div class="header-actions">
+        <div class="cao">CAO 29 MAY 26</div>
+        <button class="chip" id="refs-open" type="button">References</button>
+      </div>
     </header>
 
     <section class="layout">
