@@ -38,7 +38,6 @@
     body {
       min-height: 100vh;
       margin: 0;
-      padding-bottom: 86px;
       color: var(--text);
       background:
         linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
@@ -79,6 +78,17 @@
       border: 1px solid rgba(245,184,63,.55);
       box-shadow: 0 0 0 4px rgba(245,184,63,.08);
       flex: 0 0 auto;
+    }
+
+    .logo-link {
+      display: inline-flex;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .logo-link:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 4px;
     }
 
     h1 {
@@ -298,22 +308,18 @@
     }
 
     .nav {
-      position: fixed;
-      left: var(--nav-left, 50%);
-      bottom: 14px;
-      z-index: 20;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      width: var(--nav-width, min(920px, calc(100vw - 24px)));
+      margin-top: 16px;
+      width: 100%;
       padding: 10px;
       border: 1px solid rgba(255,255,255,.16);
       border-radius: 8px;
       background: rgba(7,10,16,.88);
       box-shadow: 0 18px 70px rgba(0,0,0,.55);
       backdrop-filter: blur(14px);
-      transform: translateX(-50%);
     }
 
     .nav button,
@@ -547,7 +553,9 @@
   <main class="app">
     <header class="topbar">
       <div class="brand">
-        <img class="logo" src="assets/SIMBA.jpg" alt="SIMBA lion logo">
+        <a class="logo-link" href="https://www.linkedin.com/in/james-m-rumpsa/" target="_blank" rel="noopener noreferrer" aria-label="Open James Rumpsa LinkedIn profile">
+          <img class="logo" src="assets/SIMBA.jpg" alt="SIMBA lion logo">
+        </a>
         <div>
           <h1>AMC - Requiring an Alternate</h1>
           <div class="subtitle">Interactive TAF practice for destination alternate decisions</div>
@@ -754,7 +762,6 @@
     const dots = [...document.querySelectorAll(".dot")];
     const prev = document.querySelector("#prev");
     const next = document.querySelector("#next");
-    const stage = document.querySelector(".stage");
     const inspectTitle = document.querySelector("#inspect-title");
     const inspectBody = document.querySelector("#inspect-body");
     const sheet = document.querySelector("#sheet");
@@ -762,6 +769,8 @@
     const sheetBody = document.querySelector("#sheet-body");
     const closeSheet = document.querySelector(".close-sheet");
     let current = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
 
     function showSlide(index, shouldScroll = true) {
       resetAnswers();
@@ -782,12 +791,6 @@
         const button = slide.querySelector(".reveal");
         if (button) button.textContent = "Show Answer";
       });
-    }
-
-    function alignNav() {
-      const rect = stage.getBoundingClientRect();
-      document.documentElement.style.setProperty("--nav-width", `${Math.min(rect.width, window.innerWidth - 24)}px`);
-      document.documentElement.style.setProperty("--nav-left", `${rect.left + rect.width / 2}px`);
     }
 
     function setExplanation(el) {
@@ -837,10 +840,27 @@
       if (event.key === "Escape") sheet.classList.remove("open");
     });
 
-    window.addEventListener("resize", alignNav);
-    window.addEventListener("load", alignNav);
+    document.addEventListener("touchstart", (event) => {
+      if (event.touches.length !== 1) return;
+      touchStartX = event.touches[0].clientX;
+      touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener("touchend", (event) => {
+      if (!touchStartX || !event.changedTouches.length) return;
+      const endX = event.changedTouches[0].clientX;
+      const endY = event.changedTouches[0].clientY;
+      const deltaX = endX - touchStartX;
+      const deltaY = endY - touchStartY;
+      touchStartX = 0;
+      touchStartY = 0;
+
+      if (Math.abs(deltaX) < 70 || Math.abs(deltaX) < Math.abs(deltaY) * 1.4) return;
+      if (deltaX < 0) showSlide(current === slides.length - 1 ? 0 : current + 1);
+      if (deltaX > 0) showSlide(current - 1);
+    }, { passive: true });
+
     showSlide(0, false);
-    alignNav();
   </script>
 </body>
 </html>
