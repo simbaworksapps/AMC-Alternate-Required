@@ -113,7 +113,7 @@
       white-space: nowrap;
       font-size: .83rem;
       font-weight: 750;
-      cursor: help;
+      cursor: pointer;
     }
 
     .layout {
@@ -375,8 +375,7 @@
       top: 94px;
     }
 
-    .inspector,
-    .refs {
+    .inspector {
       border: 1px solid var(--line);
       border-radius: 8px;
       background: rgba(16,23,36,.88);
@@ -384,8 +383,7 @@
       padding: 16px;
     }
 
-    .inspector-title,
-    .refs-title {
+    .inspector-title {
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -401,8 +399,7 @@
     }
 
     .inspector p,
-    .refs p,
-    .refs li {
+    .refs-modal li {
       color: var(--muted);
       line-height: 1.45;
       font-size: .91rem;
@@ -410,11 +407,6 @@
 
     .inspector p {
       margin: 0;
-    }
-
-    .refs ul {
-      margin: 8px 0 0;
-      padding-left: 18px;
     }
 
     .legend {
@@ -476,6 +468,54 @@
     }
 
     .close-sheet {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 50%;
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+      cursor: pointer;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(0,0,0,.62);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal-backdrop.open {
+      display: grid;
+    }
+
+    .refs-modal {
+      width: min(460px, 100%);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 8px;
+      background: #101724;
+      box-shadow: var(--shadow);
+      padding: 18px;
+      position: relative;
+    }
+
+    .refs-modal h3 {
+      margin: 0 44px 12px 0;
+      font-size: 1.25rem;
+    }
+
+    .refs-modal ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .close-modal {
       position: absolute;
       top: 12px;
       right: 12px;
@@ -561,7 +601,7 @@
           <div class="subtitle">Interactive TAF practice for destination alternate decisions</div>
         </div>
       </div>
-      <div class="chip" tabindex="0" data-title="Reference Version" data-body="Source chip requested for this guide: 202V3amc 29JUL24. Use current unit procedures and source publications when applying this in mission planning.">202V3amc 29JUL24</div>
+      <button class="chip" id="refs-open" type="button">References</button>
     </header>
 
     <section class="layout">
@@ -735,18 +775,6 @@
             <span><i class="swatch blue"></i> Basic TAF identification</span>
           </div>
         </section>
-
-        <section class="refs">
-          <div class="refs-title">Reference Stack</div>
-          <p>Use the cited source guidance for mission planning, then decode TAF format with the quick-reference products.</p>
-          <ul>
-            <li>FIH: METAR and TAF decoding in flight</li>
-            <li>AFPAM 11-238: METAR and TAF codes</li>
-            <li>202V3amc: alternate application guidance</li>
-            <li>FAA Aviation Weather Handbook: civilian-field TAFs</li>
-            <li>AFMAN 11-203: Weather for Aircrew</li>
-          </ul>
-        </section>
       </aside>
     </section>
   </main>
@@ -755,6 +783,20 @@
     <button class="close-sheet" type="button" aria-label="Close explanation">×</button>
     <h3 id="sheet-title"></h3>
     <p id="sheet-body"></p>
+  </section>
+
+  <section class="modal-backdrop" id="refs-modal" role="dialog" aria-modal="true" aria-labelledby="refs-title">
+    <div class="refs-modal">
+      <button class="close-modal" type="button" aria-label="Close references">×</button>
+      <h3 id="refs-title">References</h3>
+      <ul>
+        <li>202V3amc, 29JUL24</li>
+        <li>FIH</li>
+        <li>AFPAM 11-238</li>
+        <li>FAA Aviation Weather Handbook</li>
+        <li>AFMAN 11-203, Weather For Aircrew</li>
+      </ul>
+    </div>
   </section>
 
   <script>
@@ -768,6 +810,9 @@
     const sheetTitle = document.querySelector("#sheet-title");
     const sheetBody = document.querySelector("#sheet-body");
     const closeSheet = document.querySelector(".close-sheet");
+    const refsOpen = document.querySelector("#refs-open");
+    const refsModal = document.querySelector("#refs-modal");
+    const closeModal = document.querySelector(".close-modal");
     let current = 0;
     let touchStartX = 0;
     let touchStartY = 0;
@@ -833,11 +878,17 @@
     prev.addEventListener("click", () => showSlide(current - 1));
     next.addEventListener("click", () => showSlide(current === slides.length - 1 ? 0 : current + 1));
     closeSheet.addEventListener("click", () => sheet.classList.remove("open"));
+    refsOpen.addEventListener("click", () => refsModal.classList.add("open"));
+    closeModal.addEventListener("click", () => refsModal.classList.remove("open"));
+    refsModal.addEventListener("click", (event) => {
+      if (event.target === refsModal) refsModal.classList.remove("open");
+    });
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "ArrowRight") showSlide(current === slides.length - 1 ? 0 : current + 1);
       if (event.key === "ArrowLeft") showSlide(current - 1);
       if (event.key === "Escape") sheet.classList.remove("open");
+      if (event.key === "Escape") refsModal.classList.remove("open");
     });
 
     document.addEventListener("touchstart", (event) => {
