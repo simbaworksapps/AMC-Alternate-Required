@@ -873,10 +873,10 @@
       selectedToken = el;
       inspectTitle.textContent = title;
       inspectBody.textContent = body;
-      if (openSheet && matchMedia("(max-width: 880px)").matches) {
+      if (matchMedia("(max-width: 880px)").matches && (openSheet || sheet.classList.contains("open"))) {
         sheetTitle.textContent = title;
         sheetBody.textContent = body;
-        sheet.classList.add("open");
+        if (openSheet) sheet.classList.add("open");
       }
     }
 
