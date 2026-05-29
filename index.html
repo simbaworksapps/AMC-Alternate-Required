@@ -7,6 +7,7 @@
   <style>
     :root {
       color-scheme: dark;
+      --taf-font-scale: 1;
       --bg: #070a10;
       --panel: #101724;
       --panel-2: #121d2b;
@@ -94,7 +95,7 @@
       flex: 0 0 auto;
       position: relative;
       isolation: isolate;
-      animation: logo-settle .8s ease-out both;
+      animation: none;
     }
 
     .logo-link:focus-visible {
@@ -118,7 +119,7 @@
       mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
       filter: drop-shadow(0 0 5px rgba(255,224,141,.95));
       opacity: 0;
-      animation: logo-orbit 1.55s cubic-bezier(.16,.72,.18,1) .18s both;
+      animation: none;
     }
 
     .logo-link::after {
@@ -135,7 +136,7 @@
       opacity: 0;
       transform: translate3d(0, -50%, 0) scaleX(.05);
       transform-origin: left center;
-      animation: logo-streak .52s linear 1.38s both;
+      animation: none;
     }
 
     @keyframes logo-settle {
@@ -261,6 +262,149 @@
       }
     }
 
+    .topbar.logo-replay .logo-link {
+      animation: logo-settle-replay .8s ease-out both;
+    }
+
+    .topbar.logo-replay .logo-link::before {
+      animation: logo-orbit-replay 1.55s cubic-bezier(.16,.72,.18,1) .18s both;
+    }
+
+    .topbar.logo-replay .logo-link::after {
+      animation: logo-streak-replay .52s linear 1.38s both;
+    }
+
+    .topbar.logo-replay #refs-open::before {
+      animation: refs-flash-replay 1.05s cubic-bezier(.16,.84,.28,1) 1.9s both;
+    }
+
+    .topbar.logo-replay #refs-open::after {
+      animation: refs-dust-replay 1.12s cubic-bezier(.16,.84,.28,1) 1.92s both;
+    }
+
+    @keyframes logo-settle-replay {
+      from {
+        opacity: 0;
+        transform: scale(.94);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes logo-orbit-replay {
+      0% {
+        opacity: 0;
+        transform: rotate(-90deg) scale(.92);
+      }
+      14% {
+        opacity: 1;
+      }
+      62% {
+        opacity: .92;
+      }
+      84% {
+        opacity: .82;
+      }
+      100% {
+        opacity: 0;
+        transform: rotate(360deg) scale(1.04);
+      }
+    }
+
+    @keyframes logo-streak-replay {
+      0% {
+        opacity: 0;
+        height: 7px;
+        transform: translate3d(0, -50%, 0) scaleX(.02) scaleY(1);
+      }
+      12% {
+        opacity: 1;
+        height: 7px;
+        transform: translate3d(0, -50%, 0) scaleX(.22) scaleY(1);
+      }
+      54% {
+        opacity: 1;
+        height: 8px;
+        transform: translate3d(0, -50%, 0) scaleX(.92) scaleY(1);
+      }
+      92% {
+        opacity: 1;
+        height: 8px;
+        transform: translate3d(0, -50%, 0) scaleX(1) scaleY(1);
+      }
+      100% {
+        opacity: 0;
+        height: 8px;
+        transform: translate3d(0, -50%, 0) scaleX(1.02) scaleY(1);
+      }
+    }
+
+    @keyframes refs-flash-replay {
+      0% {
+        opacity: 0;
+        transform: scale(.94);
+      }
+      12% {
+        opacity: .88;
+        transform: scale(1.03);
+      }
+      34% {
+        opacity: .56;
+        transform: scale(1.06);
+      }
+      58% {
+        opacity: .28;
+        transform: scale(1.1);
+      }
+      78% {
+        opacity: .12;
+        transform: scale(1.14);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.18);
+      }
+    }
+
+    @keyframes refs-dust-replay {
+      0% {
+        opacity: 0;
+        transform: translate(3px, -50%) scale(.38);
+      }
+      10% {
+        opacity: .82;
+        transform: translate(0, -50%) scale(.76);
+      }
+      28% {
+        opacity: .62;
+        transform: translate(9px, -50%) scale(.98);
+      }
+      52% {
+        opacity: .34;
+        transform: translate(20px, -50%) scale(1.13);
+      }
+      76% {
+        opacity: .13;
+        transform: translate(32px, -50%) scale(1.24);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(44px, -50%) scale(1.34);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .topbar.logo-replay .logo-link,
+      .topbar.logo-replay .logo-link::before,
+      .topbar.logo-replay .logo-link::after,
+      .topbar.logo-replay #refs-open::before,
+      .topbar.logo-replay #refs-open::after {
+        animation: none;
+      }
+    }
+
     h1 {
       margin: 0;
       font-size: clamp(1.15rem, 2.8vw, 2rem);
@@ -306,6 +450,7 @@
     .tok:active,
     .nav button:active,
     .reveal:active,
+    .taf-size button:active,
     .close-sheet:active,
     .close-modal:active {
       transform: translateY(1px) scale(.98);
@@ -330,7 +475,7 @@
       border-radius: 999px;
       border: 1px solid rgba(255,224,141,.72);
       box-shadow: 0 0 12px rgba(255,224,141,.48), inset 0 0 9px rgba(255,224,141,.18);
-      animation: refs-flash 1.05s cubic-bezier(.16,.84,.28,1) 1.9s both;
+      animation: none;
     }
 
     #refs-open::after {
@@ -347,7 +492,7 @@
         radial-gradient(ellipse at left, rgba(255,224,141,.42), rgba(145,111,50,.16) 42%, transparent 74%) 0 15px / 54px 16px no-repeat;
       filter: blur(.35px);
       transform-origin: left center;
-      animation: refs-dust 1.12s cubic-bezier(.16,.84,.28,1) 1.92s both;
+      animation: none;
     }
 
     .layout {
@@ -436,10 +581,73 @@
       font-size: .8rem;
     }
 
+    .taf-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .taf-size {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .taf-size-value {
+      min-width: 52px;
+      color: var(--muted);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: .72rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .taf-size button {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 850;
+      line-height: 1;
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
+    }
+
+    .taf-size button:hover,
+    .taf-size button:focus-visible {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(81,214,255,.24);
+    }
+
+    .chip:hover,
+    .chip:focus-visible,
+    .nav button:hover,
+    .nav button:focus-visible,
+    .reveal:hover,
+    .reveal:focus-visible,
+    .close-sheet:hover,
+    .close-sheet:focus-visible,
+    .close-modal:hover,
+    .close-modal:focus-visible {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(81,214,255,.24), 0 0 18px rgba(81,214,255,.12);
+    }
+
+    .chip:hover,
+    .chip:focus-visible {
+      border-color: rgba(245,184,63,.78);
+      box-shadow: 0 0 0 2px rgba(245,184,63,.28), 0 0 18px rgba(245,184,63,.18);
+    }
+
     .taf {
       padding: 14px;
       font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
-      font-size: clamp(.9rem, 1.95vw, 1.02rem);
+      font-size: calc(clamp(.9rem, 1.95vw, 1.02rem) * var(--taf-font-scale));
       line-height: 1.6;
     }
 
@@ -873,7 +1081,7 @@
 </head>
 <body>
   <main class="app">
-    <header class="topbar">
+    <header class="topbar logo-replay">
       <div class="brand">
         <a class="logo-link" href="https://www.linkedin.com/in/james-m-rumpsa/" target="_blank" rel="noopener noreferrer" aria-label="Open James Rumpsa LinkedIn profile">
           <img class="logo" src="assets/SIMBA.jpg" alt="SIMBA lion logo">
@@ -898,7 +1106,15 @@
 
             <div class="taf-card">
               <div class="taf-toolbar">
-                <strong>KMCF TAF</strong>
+                <div class="taf-title">
+                  <strong>KMCF TAF</strong>
+                  <span class="taf-size" aria-label="TAF font size controls">
+                    <button class="taf-smaller" type="button" aria-label="Decrease TAF font size">−</button>
+                    <span class="taf-size-value">Default</span>
+                    <button class="taf-larger" type="button" aria-label="Increase TAF font size">+</button>
+                    <button class="taf-reset" type="button" aria-label="Reset TAF font size to default">↺</button>
+                  </span>
+                </div>
                 <span>Tap or hover any boxed part for the decode.</span>
               </div>
               <div class="taf" role="group" aria-label="KMCF TAF">
@@ -964,7 +1180,15 @@
 
             <div class="taf-card">
               <div class="taf-toolbar">
-                <strong>KSKA TAF</strong>
+                <div class="taf-title">
+                  <strong>KSKA TAF</strong>
+                  <span class="taf-size" aria-label="TAF font size controls">
+                    <button class="taf-smaller" type="button" aria-label="Decrease TAF font size">−</button>
+                    <span class="taf-size-value">Default</span>
+                    <button class="taf-larger" type="button" aria-label="Increase TAF font size">+</button>
+                    <button class="taf-reset" type="button" aria-label="Reset TAF font size to default">↺</button>
+                  </span>
+                </div>
                 <span>Tap or hover any boxed part for the decode.</span>
               </div>
               <div class="taf" role="group" aria-label="KSKA TAF">
@@ -1012,7 +1236,15 @@
 
             <div class="taf-card">
               <div class="taf-toolbar">
-                <strong>ETAR TAF</strong>
+                <div class="taf-title">
+                  <strong>ETAR TAF</strong>
+                  <span class="taf-size" aria-label="TAF font size controls">
+                    <button class="taf-smaller" type="button" aria-label="Decrease TAF font size">−</button>
+                    <span class="taf-size-value">Default</span>
+                    <button class="taf-larger" type="button" aria-label="Increase TAF font size">+</button>
+                    <button class="taf-reset" type="button" aria-label="Reset TAF font size to default">↺</button>
+                  </span>
+                </div>
                 <span>Tap or hover any boxed part for the decode.</span>
               </div>
               <div class="taf" role="group" aria-label="ETAR TAF">
@@ -1111,10 +1343,24 @@
     const refsOpen = document.querySelector("#refs-open");
     const refsModal = document.querySelector("#refs-modal");
     const closeModal = document.querySelector(".close-modal");
+    const logoLink = document.querySelector(".logo-link");
+    const topbar = document.querySelector(".topbar");
     let current = 0;
     let touchStartX = 0;
     let touchStartY = 0;
     let selectedToken = null;
+    let tafFontScale = Number(localStorage.getItem("tafFontScale")) || 1;
+
+    function applyTafFontScale() {
+      tafFontScale = Math.min(1.5, Math.max(.5, tafFontScale));
+      document.documentElement.style.setProperty("--taf-font-scale", tafFontScale.toFixed(2));
+      localStorage.setItem("tafFontScale", tafFontScale.toFixed(2));
+      const percent = Math.round((tafFontScale - 1) * 100);
+      const label = percent === 0 ? "Default" : `${percent > 0 ? "+" : ""}${percent}%`;
+      document.querySelectorAll(".taf-size-value").forEach((value) => {
+        value.textContent = label;
+      });
+    }
 
     function showSlide(index, shouldScroll = true) {
       resetAnswers();
@@ -1179,6 +1425,46 @@
       });
     });
 
+    document.querySelectorAll(".taf-smaller").forEach((button) => {
+      button.addEventListener("click", () => {
+        tafFontScale -= .05;
+        applyTafFontScale();
+      });
+    });
+
+    document.querySelectorAll(".taf-larger").forEach((button) => {
+      button.addEventListener("click", () => {
+        tafFontScale += .05;
+        applyTafFontScale();
+      });
+    });
+
+    document.querySelectorAll(".taf-reset").forEach((button) => {
+      button.addEventListener("click", () => {
+        tafFontScale = 1;
+        applyTafFontScale();
+      });
+    });
+
+    function replayLogoAnimation() {
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      logoLink.classList.remove("logo-replay");
+      topbar.classList.remove("logo-replay");
+      void logoLink.offsetWidth;
+      logoLink.classList.add("logo-replay");
+      topbar.classList.add("logo-replay");
+      window.setTimeout(() => {
+        logoLink.classList.remove("logo-replay");
+        topbar.classList.remove("logo-replay");
+      }, 3200);
+    }
+
+    logoLink.addEventListener("mouseenter", replayLogoAnimation);
+    logoLink.addEventListener("focus", replayLogoAnimation);
+    window.setTimeout(() => {
+      topbar.classList.remove("logo-replay");
+    }, 3200);
+
     document.addEventListener("mouseover", (event) => {
       const target = event.target.closest("[data-title][data-body]");
       if (target && !matchMedia("(max-width: 880px)").matches) setExplanation(target);
@@ -1225,6 +1511,7 @@
     }, { passive: true });
 
     showSlide(0, false);
+    applyTafFontScale();
   </script>
 </body>
 </html>
