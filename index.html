@@ -482,6 +482,11 @@
       box-shadow: 0 0 0 2px rgba(81,214,255,.35);
     }
 
+    .tok.selected {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(81,214,255,.35), 0 0 18px rgba(81,214,255,.18);
+    }
+
     .tok.warn {
       color: #17120b;
       background: rgba(255,209,102,.92);
@@ -498,6 +503,12 @@
       font-weight: 800;
     }
 
+    .tok.warn.selected,
+    .tok.action.selected {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(81,214,255,.42), 0 0 18px rgba(81,214,255,.2);
+    }
+
     .slide:not(.answered) .tok.action {
       color: inherit;
       background: rgba(255,255,255,.045);
@@ -507,7 +518,8 @@
     }
 
     .slide:not(.answered) .tok.action:hover,
-    .slide:not(.answered) .tok.action:focus-visible {
+    .slide:not(.answered) .tok.action:focus-visible,
+    .slide:not(.answered) .tok.action.selected {
       border-color: var(--cyan);
       background: rgba(81,214,255,.14);
       box-shadow: 0 0 0 2px rgba(81,214,255,.35);
@@ -1106,6 +1118,8 @@
 
     function showSlide(index, shouldScroll = true) {
       resetAnswers();
+      selectedToken?.classList.remove("selected");
+      selectedToken = null;
       current = Math.max(0, Math.min(index, slides.length - 1));
       slides.forEach((slide, i) => slide.classList.toggle("active", i === current));
       dots.forEach((dot, i) => dot.classList.toggle("active", i === current));
@@ -1130,7 +1144,9 @@
       const title = el.dataset.title;
       const slide = el.closest(".slide");
       const body = slide?.classList.contains("answered") ? el.dataset.body : (el.dataset.basic || el.dataset.body);
+      selectedToken?.classList.remove("selected");
       selectedToken = el;
+      selectedToken.classList.add("selected");
       inspectTitle.textContent = title;
       inspectBody.textContent = body;
       if (matchMedia("(max-width: 880px)").matches && (openSheet || sheet.classList.contains("open"))) {
