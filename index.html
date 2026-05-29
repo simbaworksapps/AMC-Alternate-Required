@@ -647,7 +647,7 @@
     button.tap-feedback {
       border-color: var(--cyan) !important;
       box-shadow: 0 0 0 2px rgba(81,214,255,.34), 0 0 20px rgba(81,214,255,.2) !important;
-      animation: tap-glow .2s ease-out both;
+      animation: tap-glow .14s ease-out both;
     }
 
     .chip.tap-feedback {
@@ -1530,7 +1530,7 @@
           tapTimers.set(button, window.setTimeout(() => {
             button.classList.remove("tap-feedback");
             tapTimers.delete(button);
-          }, 320));
+          }, 140));
         });
       }
 
