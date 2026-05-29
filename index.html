@@ -645,14 +645,14 @@
     }
 
     button.tap-feedback {
-      border-color: var(--cyan);
-      box-shadow: 0 0 0 2px rgba(81,214,255,.28), 0 0 18px rgba(81,214,255,.16);
+      border-color: var(--cyan) !important;
+      box-shadow: 0 0 0 2px rgba(81,214,255,.34), 0 0 20px rgba(81,214,255,.2) !important;
       animation: tap-glow .2s ease-out both;
     }
 
     .chip.tap-feedback {
-      border-color: rgba(245,184,63,.78);
-      box-shadow: 0 0 0 2px rgba(245,184,63,.28), 0 0 18px rgba(245,184,63,.18);
+      border-color: rgba(245,184,63,.84) !important;
+      box-shadow: 0 0 0 2px rgba(245,184,63,.34), 0 0 20px rgba(245,184,63,.22) !important;
     }
 
     @keyframes tap-glow {
@@ -688,13 +688,13 @@
       }
 
       button.tap-feedback {
-        border-color: var(--cyan);
-        box-shadow: 0 0 0 2px rgba(81,214,255,.28), 0 0 18px rgba(81,214,255,.16);
+        border-color: var(--cyan) !important;
+        box-shadow: 0 0 0 2px rgba(81,214,255,.34), 0 0 20px rgba(81,214,255,.2) !important;
       }
 
       .chip.tap-feedback {
-        border-color: rgba(245,184,63,.78);
-        box-shadow: 0 0 0 2px rgba(245,184,63,.28), 0 0 18px rgba(245,184,63,.18);
+        border-color: rgba(245,184,63,.84) !important;
+        box-shadow: 0 0 0 2px rgba(245,184,63,.34), 0 0 20px rgba(245,184,63,.22) !important;
       }
     }
 
@@ -1521,17 +1521,27 @@
     }, 3200);
 
     document.querySelectorAll("button").forEach((button) => {
-      button.addEventListener("pointerdown", (event) => {
-        if (event.pointerType === "mouse") return;
+      function flashTapFeedback() {
         window.clearTimeout(tapTimers.get(button));
         button.classList.remove("tap-feedback");
         void button.offsetWidth;
-        button.classList.add("tap-feedback");
-        tapTimers.set(button, window.setTimeout(() => {
-          button.classList.remove("tap-feedback");
-          tapTimers.delete(button);
-        }, 220));
+        requestAnimationFrame(() => {
+          button.classList.add("tap-feedback");
+          tapTimers.set(button, window.setTimeout(() => {
+            button.classList.remove("tap-feedback");
+            tapTimers.delete(button);
+          }, 320));
+        });
+      }
+
+      button.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "mouse") return;
+        flashTapFeedback();
       });
+
+      button.addEventListener("touchstart", () => {
+        flashTapFeedback();
+      }, { passive: true });
 
       button.addEventListener("pointerup", (event) => {
         if (event.pointerType !== "mouse") button.blur();
