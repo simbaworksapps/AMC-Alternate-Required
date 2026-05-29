@@ -661,10 +661,10 @@
                 <span class="taf-line">
                   <button class="tok warn" data-title="BECMG 2819/2820" data-body="Becoming means a gradual change. Per AFPAM 11-238, the new condition becomes effective by the end time, so by 2000Z this line is in effect. At 1900Z, treat the transition carefully and include the ±1 hour window.">BECMG 2819/2820</button>
                   <button class="tok" data-title="23009KT" data-body="Wind from 230 degrees at 9 knots.">23009KT</button>
-                  <button class="tok action" data-title="4000" data-body="Visibility 4,000 meters, which is about 2.5 statute miles. This is between 2 and 3 SM, but still below the 3 statute mile alternate-planning threshold. (202V3, 4.16.2.1)">4000</button>
+                  <button class="tok action" data-title="4000" data-basic="Visibility 4,000 meters, which is about 2.5 statute miles." data-body="Visibility 4,000 meters, which is about 2.5 statute miles. This is below the 3 SM alternate-planning threshold. (202V3, 4.16.2.1)">4000</button>
                   <button class="tok" data-title="-SHRA" data-body="Light rain showers.">-SHRA</button>
                   <button class="tok" data-title="VCTS" data-body="Thunderstorms in the vicinity. This matters for mission planning and local procedures even if not directly over the field.">VCTS</button>
-                  <button class="tok action" data-title="BKN005CB" data-body="Broken cumulonimbus at 500 feet AGL. Broken is a ceiling, and this ceiling is below 2,000 feet AGL within the ETA window. (202V3, 4.16.2.1)">BKN005CB</button>
+                  <button class="tok action" data-title="BKN005CB" data-basic="Broken cumulonimbus at 500 feet AGL." data-body="Broken cumulonimbus at 500 feet AGL. Broken is a ceiling, and this ceiling is below 2,000 feet AGL within the ETA window. (202V3, 4.16.2.1)">BKN005CB</button>
                   <button class="tok warn" data-title="620504" data-body="TAF icing group. Per AFPAM 11-238, icing groups begin with 6 and follow the cloud group. This decodes as light rime icing in cloud from 5,000 to 9,000 feet AGL.">620504</button>
                   <button class="tok" data-title="QNH2999INS" data-body="Altimeter setting 29.99 inches of mercury.">QNH2999INS</button>
                 </span>
@@ -713,7 +713,7 @@
                 </span>
                 <span class="taf-line">
                   <button class="tok warn" data-title="BECMG 2901/2902" data-body="Becoming between 0100Z and 0200Z on the 29th. AFPAM 11-238 describes BECMG as a gradual change, effective by the end time. At 0200Z, this changed forecast line applies.">BECMG 2901/2902</button>
-                  <button class="tok action" data-title="VRB25G35KT" data-body="Variable wind at 25 knots gusting to 35 knots. Alternate required if the forecast winds are outside aircraft limitations. (202V3, 4.16.2.3)">VRB25G35KT</button>
+                  <button class="tok action" data-title="VRB25G35KT" data-basic="Variable wind at 25 knots gusting to 35 knots." data-body="Variable wind at 25 knots gusting to 35 knots. Alternate required if the forecast winds are outside aircraft limitations. (202V3, 4.16.2.3)">VRB25G35KT</button>
                   <button class="tok" data-title="4800" data-body="Visibility 4,800 meters, about 3 statute miles.">4800</button>
                   <button class="tok" data-title="TSRA" data-body="Thunderstorm with rain. This can affect suitability even when ceiling and visibility alone are not the whole story.">TSRA</button>
                   <button class="tok" data-title="OVC065CB" data-body="Overcast cumulonimbus at 6,500 feet AGL. Overcast is a ceiling, but this ceiling is above 2,000 feet.">OVC065CB</button>
@@ -751,7 +751,7 @@
               <div class="taf" role="group" aria-label="ETAR TAF">
                 <span class="taf-line">
                   <button class="tok info" data-title="TAF" data-body="Terminal Aerodrome Forecast.">TAF</button>
-                  <button class="tok action" data-title="ETAR" data-body="Ramstein AB is outside the CONUS. Alternate required when the departure or destination airport is outside the CONUS, unless an exception applies. (202V3, 4.16.6.1)">ETAR</button>
+                  <button class="tok action" data-title="ETAR" data-basic="Ramstein AB." data-body="Ramstein AB is outside the CONUS. Alternate required when the departure or destination airport is outside the CONUS, unless an exception applies. (202V3, 4.16.6.1)">ETAR</button>
                   <button class="tok" data-title="281800Z" data-body="Forecast issued on the 28th day of the month at 1800Z.">281800Z</button>
                   <button class="tok" data-title="2818/2924" data-body="Valid from the 28th at 1800Z through the 29th at 2400Z.">2818/2924</button>
                   <button class="tok" data-title="06003KT" data-body="Wind from 060 degrees at 3 knots.">06003KT</button>
@@ -842,6 +842,7 @@
     let current = 0;
     let touchStartX = 0;
     let touchStartY = 0;
+    let selectedToken = null;
 
     function showSlide(index, shouldScroll = true) {
       resetAnswers();
@@ -867,7 +868,9 @@
 
     function setExplanation(el) {
       const title = el.dataset.title;
-      const body = el.dataset.body;
+      const slide = el.closest(".slide");
+      const body = slide?.classList.contains("answered") ? el.dataset.body : (el.dataset.basic || el.dataset.body);
+      selectedToken = el;
       inspectTitle.textContent = title;
       inspectBody.textContent = body;
       if (matchMedia("(max-width: 880px)").matches) {
@@ -896,6 +899,7 @@
           slide.classList.remove("answered");
           button.textContent = "Show Answer";
         }
+        if (selectedToken && selectedToken.closest(".slide") === slide) setExplanation(selectedToken);
       });
     });
 
