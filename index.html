@@ -1186,7 +1186,11 @@
 
     prev.addEventListener("click", () => showSlide(current - 1));
     next.addEventListener("click", () => showSlide(current === slides.length - 1 ? 0 : current + 1));
-    closeSheet.addEventListener("click", () => sheet.classList.remove("open"));
+    closeSheet.addEventListener("click", () => {
+      sheet.classList.remove("open");
+      selectedToken?.classList.remove("selected");
+      selectedToken = null;
+    });
     refsOpen.addEventListener("click", () => refsModal.classList.add("open"));
     closeModal.addEventListener("click", () => refsModal.classList.remove("open"));
     refsModal.addEventListener("click", (event) => {
