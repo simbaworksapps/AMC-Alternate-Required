@@ -29,6 +29,7 @@
 
     html {
       min-height: 100%;
+      scrollbar-gutter: stable;
       background:
         radial-gradient(circle at 18% 0%, rgba(245,184,63,.22), transparent 30%),
         radial-gradient(circle at 84% 12%, rgba(81,214,255,.16), transparent 26%),
@@ -48,6 +49,10 @@
 
     button {
       font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
     }
 
     .app {
@@ -294,6 +299,17 @@
       font-size: .83rem;
       font-weight: 750;
       cursor: pointer;
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
+    }
+
+    .chip:active,
+    .tok:active,
+    .nav button:active,
+    .reveal:active,
+    .close-sheet:active,
+    .close-modal:active {
+      transform: translateY(1px) scale(.98);
+      box-shadow: 0 0 0 3px rgba(81,214,255,.18), 0 0 18px rgba(81,214,255,.18);
     }
 
     #refs-open {
@@ -458,6 +474,14 @@
       background: rgba(81,214,255,.14);
     }
 
+    .tok.warn:hover,
+    .tok.warn:focus-visible,
+    .tok.action:hover,
+    .tok.action:focus-visible {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 2px rgba(81,214,255,.35);
+    }
+
     .tok.warn {
       color: #17120b;
       background: rgba(255,209,102,.92);
@@ -480,6 +504,13 @@
       border-color: rgba(255,255,255,.12);
       box-shadow: none;
       font-weight: inherit;
+    }
+
+    .slide:not(.answered) .tok.action:hover,
+    .slide:not(.answered) .tok.action:focus-visible {
+      border-color: var(--cyan);
+      background: rgba(81,214,255,.14);
+      box-shadow: 0 0 0 2px rgba(81,214,255,.35);
     }
 
     .tok.info {
@@ -570,6 +601,7 @@
       padding: 10px 14px;
       cursor: pointer;
       font-weight: 750;
+      transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
     }
 
     .reveal {
