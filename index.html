@@ -850,6 +850,36 @@
       grid-column: 1 / -1;
     }
 
+    details.callout {
+      cursor: default;
+    }
+
+    details.callout summary {
+      cursor: pointer;
+      font-weight: 850;
+      list-style: none;
+    }
+
+    details.callout summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.callout summary::after {
+      content: "+";
+      float: right;
+      color: var(--gold);
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    details.callout[open] summary {
+      margin-bottom: 8px;
+    }
+
+    details.callout[open] summary::after {
+      content: "−";
+    }
+
     .nav {
       display: flex;
       align-items: center;
@@ -1213,18 +1243,18 @@
                 <strong>Decision</strong>
                 <p>Alternate required. The forecast includes a ceiling below 2,000 feet AGL and visibility below 3 statute miles within the required window. (202V3, 4.16.2.1)</p>
               </div>
-              <div class="callout wide">
-                <strong>2 Alternates</strong>
+              <details class="callout wide">
+                <summary>2 Alternates</summary>
                 <p>4.16.7. (Added-AMC) File two alternates when filing to a destination where (based on the lowest compatible approach):</p>
                 <p>4.16.7.1. (Added-AMC) The forecast visibility (intermittent or prevailing) is less than published for the available precision approach. (T-2)</p>
                 <p>4.16.7.2. (Added-AMC) The forecast ceiling OR visibility (intermittent or prevailing) is less than published for all other approaches. (T-2)</p>
-              </div>
-              <div class="callout wide">
-                <strong>Departure Alternates</strong>
+              </details>
+              <details class="callout wide">
+                <summary>Departure Alternates</summary>
                 <p>5.2. (AMC) Weather. MAF aircraft may depart when takeoff weather is below approach minimums (ceiling or visibility), but a departure alternate is required.</p>
                 <p>5.2.2. (Added-AMC) A departure alternate is required if weather at the departure airport is below the lowest landing minimums for a suitable approach (ceiling or visibility, or crosswinds). (T-2) If planning an ILS approach, Cat I minimums will be used. (T-2)</p>
                 <p>Review guidance on departure alternate distances.</p>
-              </div>
+              </details>
             </div>
           </article>
 
@@ -1328,12 +1358,12 @@
                 <strong>Decision</strong>
                 <p>Alternate required unless an AMC exception applies. The trigger is not bad weather; it is the OCONUS destination rule. (202V3amc, 4.16.6.1)</p>
               </div>
-              <div class="callout wide">
-                <strong>Other Conditions Requiring an Alternate</strong>
+              <details class="callout wide">
+                <summary>Other Conditions Requiring an Alternate</summary>
                 <p>4.16.6. (Added-AMC) Other Conditions Requiring an Alternate:</p>
                 <p>4.16.6.1. (Added-AMC) Departure or destination airport is outside the CONUS. (T-2) Exception: OCONUS departures to CONUS destination locations, or intra-theater flights not exceeding three hours. Note: If the OCONUS to CONUS exception is utilized, the aircrew must update weather three hours prior to landing to verify expected conditions. (T-2)</p>
                 <p>4.16.6.2. (Added-AMC) Flights into airfields where fuel availability is unknown or aircraft are experiencing extended fueling delays or MOG/ATC issues are requiring aircraft to hold for extended periods. (T-2)</p>
-              </div>
+              </details>
             </div>
           </article>
         <nav class="nav" aria-label="Scenario navigation">
