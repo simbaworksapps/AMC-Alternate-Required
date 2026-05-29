@@ -647,11 +647,24 @@
     button.tap-feedback {
       border-color: var(--cyan);
       box-shadow: 0 0 0 2px rgba(81,214,255,.28), 0 0 18px rgba(81,214,255,.16);
+      animation: tap-glow .2s ease-out both;
     }
 
     .chip.tap-feedback {
       border-color: rgba(245,184,63,.78);
       box-shadow: 0 0 0 2px rgba(245,184,63,.28), 0 0 18px rgba(245,184,63,.18);
+    }
+
+    @keyframes tap-glow {
+      0% {
+        filter: brightness(1);
+      }
+      40% {
+        filter: brightness(1.16);
+      }
+      100% {
+        filter: brightness(1);
+      }
     }
 
     @media (hover: none) and (pointer: coarse) {
@@ -1499,6 +1512,8 @@
     document.querySelectorAll("button").forEach((button) => {
       button.addEventListener("pointerdown", (event) => {
         if (event.pointerType === "mouse") return;
+        button.classList.remove("tap-feedback");
+        void button.offsetWidth;
         button.classList.add("tap-feedback");
         window.setTimeout(() => button.classList.remove("tap-feedback"), 180);
       });
