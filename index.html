@@ -644,6 +644,27 @@
       box-shadow: 0 0 0 2px rgba(245,184,63,.28), 0 0 18px rgba(245,184,63,.18);
     }
 
+    @media (hover: none) and (pointer: coarse) {
+      .taf-size button:hover,
+      .nav button:hover,
+      .reveal:hover,
+      .close-sheet:hover,
+      .close-modal:hover {
+        border-color: rgba(255,255,255,.16);
+        box-shadow: none;
+      }
+
+      .chip:hover {
+        border-color: rgba(245,184,63,.46);
+        box-shadow: none;
+      }
+
+      .nav button.primary:hover,
+      .reveal:hover {
+        border-color: rgba(81,214,255,.55);
+      }
+    }
+
     .taf {
       padding: 14px;
       font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
