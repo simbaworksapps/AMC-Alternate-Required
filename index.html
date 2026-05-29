@@ -866,14 +866,14 @@
       });
     }
 
-    function setExplanation(el) {
+    function setExplanation(el, openSheet = true) {
       const title = el.dataset.title;
       const slide = el.closest(".slide");
       const body = slide?.classList.contains("answered") ? el.dataset.body : (el.dataset.basic || el.dataset.body);
       selectedToken = el;
       inspectTitle.textContent = title;
       inspectBody.textContent = body;
-      if (matchMedia("(max-width: 880px)").matches) {
+      if (openSheet && matchMedia("(max-width: 880px)").matches) {
         sheetTitle.textContent = title;
         sheetBody.textContent = body;
         sheet.classList.add("open");
@@ -899,7 +899,7 @@
           slide.classList.remove("answered");
           button.textContent = "Show Answer";
         }
-        if (selectedToken && selectedToken.closest(".slide") === slide) setExplanation(selectedToken);
+        if (selectedToken && selectedToken.closest(".slide") === slide) setExplanation(selectedToken, false);
       });
     });
 
