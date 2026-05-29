@@ -525,7 +525,8 @@
 
     .slide {
       display: none;
-      padding: clamp(18px, 3vw, 32px);
+      --slide-pad: clamp(18px, 3vw, 32px);
+      padding: var(--slide-pad);
     }
 
     .slide.active {
@@ -567,6 +568,8 @@
       background: #070b12;
       overflow: hidden;
       width: 100%;
+      margin-inline: calc(var(--slide-pad) * -1);
+      width: calc(100% + (var(--slide-pad) * 2));
     }
 
     .taf-toolbar {
@@ -798,6 +801,7 @@
       display: grid;
       gap: 12px;
       margin-top: 18px;
+      margin-inline: calc(var(--slide-pad) * -1);
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -886,7 +890,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin: auto clamp(18px, 3vw, 32px) clamp(18px, 3vw, 32px);
+      margin: auto 0 0;
       width: auto;
       padding: 10px;
       border: 1px solid rgba(255,255,255,.16);
