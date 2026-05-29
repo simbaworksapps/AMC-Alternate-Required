@@ -145,12 +145,18 @@
     .stage {
       display: flex;
       flex-direction: column;
-      min-height: calc(100vh - 124px);
+      min-height: calc(100svh - 124px);
       border: 1px solid var(--line);
       border-radius: 8px;
       background: linear-gradient(180deg, rgba(16,23,36,.94), rgba(11,17,27,.94));
       box-shadow: var(--shadow);
       overflow: hidden;
+    }
+
+    @supports (height: 100dvh) {
+      .stage {
+        min-height: calc(100dvh - 124px);
+      }
     }
 
     .slide {
