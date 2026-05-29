@@ -1465,6 +1465,12 @@
       topbar.classList.remove("logo-replay");
     }, 3200);
 
+    document.querySelectorAll("button").forEach((button) => {
+      button.addEventListener("pointerup", (event) => {
+        if (event.pointerType !== "mouse") button.blur();
+      });
+    });
+
     document.addEventListener("mouseover", (event) => {
       const target = event.target.closest("[data-title][data-body]");
       if (target && !matchMedia("(max-width: 880px)").matches) setExplanation(target);
