@@ -263,6 +263,14 @@
       font-weight: 800;
     }
 
+    .slide:not(.answered) .tok.action {
+      color: inherit;
+      background: rgba(255,255,255,.045);
+      border-color: rgba(255,255,255,.12);
+      box-shadow: none;
+      font-weight: inherit;
+    }
+
     .tok.info {
       color: #061016;
       background: rgba(81,214,255,.88);
@@ -850,6 +858,7 @@
 
     function resetAnswers() {
       document.querySelectorAll(".slide").forEach((slide) => {
+        slide.classList.remove("answered");
         slide.querySelector(".answer")?.setAttribute("hidden", "");
         const button = slide.querySelector(".reveal");
         if (button) button.textContent = "Show Answer";
@@ -880,9 +889,11 @@
         const isHidden = answer.hasAttribute("hidden");
         if (isHidden) {
           answer.removeAttribute("hidden");
+          slide.classList.add("answered");
           button.textContent = "Hide Answer";
         } else {
           answer.setAttribute("hidden", "");
+          slide.classList.remove("answered");
           button.textContent = "Show Answer";
         }
       });
